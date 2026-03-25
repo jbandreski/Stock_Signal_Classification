@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib
-# matplotlib.use('Agg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 TRANSACTION_COST = 0.001   # 0.1 % per trade (round-trip)
