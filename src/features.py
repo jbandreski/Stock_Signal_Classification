@@ -51,6 +51,19 @@ def engineer_features(df: pd.DataFrame,
     feat["MACD"] = macd_df["MACD"]
     feat["MACD_Signal"] = macd_df["MACD_Signal"]
 
+    # Bollinger Bands — measures how far price is from its normal range
+    rolling_mean = close.rolling(20).mean()
+    rolling_std  = close.rolling(20).std()
+    feat["BB_upper"] = (close - (rolling_mean + 2 * rolling_std))
+    feat["BB_lower"] = (close - (rolling_mean - 2 * rolling_std))
+
+    # Price momentum — captures trend strength over 5 and 10 days
+    feat["Momentum_5"]  = close.pct_change(5)
+    feat["Momentum_10"] = close.pct_change(10)
+
+    # Volume change — confirms whether price moves are backed by activity
+    feat["Volume_Change"] = df["Volume"].squeeze().pct_change()
+
     # Forward return for labeling (look-ahead — kept separate from features)
     forward_return = close.pct_change(horizon).shift(-horizon)
 
