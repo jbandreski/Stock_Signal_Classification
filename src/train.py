@@ -3,8 +3,14 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+import random
 
 from src.model import SignalClassifier
+
+# Set random seeds for reproducibility across PyTorch, NumPy, and Python
+torch.manual_seed(42)
+random.seed(42)
+np.random.seed(42)
 
 FEATURE_COLS = ["Return", "SMA_10", "SMA_50", "Volatility", "RSI", "MACD", "MACD_Signal"]
 
