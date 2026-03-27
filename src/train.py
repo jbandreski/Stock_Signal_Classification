@@ -12,7 +12,7 @@ torch.manual_seed(42)
 random.seed(42)
 np.random.seed(42)
 
-FEATURE_COLS = ["Return", "SMA_10", "SMA_50", "Volatility", "RSI", "MACD", "MACD_Signal"]
+FEATURE_COLS = ["Return", "SMA_10", "SMA_50", "Volatility", "RSI", "MACD", "MACD_Signal", "BB_upper", "BB_lower", "Momentum_5", "Momentum_10", "Volume_Change"]
 
 def train_model(feat_df,
                 epochs: int = 50,
