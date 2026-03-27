@@ -18,7 +18,8 @@ def train_model(feat_df,
                 epochs: int = 50,
                 batch_size: int = 32,
                 lr: float = 1e-3,
-                test_ratio: float = 0.2):
+                test_ratio: float = 0.2,
+                patience: int = 10):
     """
     Chronological train/test split (Section V-A) then train the classifier.
     Returns trained model, scaler, and the test split dataframe.
@@ -50,8 +51,11 @@ def train_model(feat_df,
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimiser = torch.optim.Adam(model.parameters(), lr=lr)
 
-    # --- Training loop ---
+   best_loss = float('inf')
+   patience_counter = 0
+
     model.train()
+    #Training Loop
     for epoch in range(1, epochs + 1):
         epoch_loss = 0.0
         for X_batch, y_batch in loader:
@@ -60,7 +64,20 @@ def train_model(feat_df,
             loss.backward()
             optimiser.step()
             epoch_loss += loss.item()
+
+        avg_loss = epoch_loss / len(loader)
+
         if epoch % 10 == 0:
-            print(f"Epoch {epoch}/{epochs}  Loss: {epoch_loss/len(loader):.4f}")
+            print(f"Epoch {epoch}/{epochs}  Loss: {avg_loss:.4f}")
+
+        # Early stopping — stop if loss hasn't improved in 'patience' epochs
+        if avg_loss < best_loss:
+            best_loss = avg_loss
+            patience_counter = 0
+        else:
+            patience_counter += 1
+            if patience_counter >= patience:
+                print(f"Early stopping at epoch {epoch}")
+                break
 
     return model, scaler, test_df, X_test
