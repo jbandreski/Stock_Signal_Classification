@@ -58,15 +58,29 @@ def financial_metrics(df: pd.DataFrame) -> dict:
         print(f"{k:20s}: {v:.4f}")
 
     # Plot
-    plt.figure(figsize=(12, 5))
-    plt.plot(cum_strat.values,  label="Strategy")
-    plt.plot(cum_market.values, label="Buy & Hold")
-    plt.title("Cumulative Returns")
-    plt.xlabel("Trading Days")
-    plt.ylabel("Growth of $1")
-    plt.legend()
+    # Plot
+    fig, ax = plt.subplots(figsize=(12, 5))
+    ax.plot(df.index, cum_strat.values,  label="Strategy")
+    ax.plot(df.index, cum_market.values, label="Buy & Hold")
+
+    # Add test period shading
+    ax.axvspan(df.index[0], df.index[-1], alpha=0.05, color='blue', label="Test Period")
+
+    # Add start and end date labels on x axis
+    start_date = df.index[0].strftime("%Y-%m-%d")
+    end_date   = df.index[-1].strftime("%Y-%m-%d")
+
+    ax.set_xticks([df.index[0], df.index[len(df)//2], df.index[-1]])
+    ax.set_xticklabels([start_date,
+                        df.index[len(df)//2].strftime("%Y-%m-%d"),
+                        end_date], rotation=15)
+
+    ax.set_title(f"Cumulative Returns (Test Period: {start_date} to {end_date})")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Growth of $1")
+    ax.legend()
     plt.tight_layout()
     plt.savefig("results/cumulative_returns.png", dpi=150)
-    plt.show()
+    plt.close()
 
     return metrics
